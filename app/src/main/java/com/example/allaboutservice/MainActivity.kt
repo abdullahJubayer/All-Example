@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        startService(Intent(this, BackgroundStartedService::class.java))
     }
 
     override fun onDestroy() {
