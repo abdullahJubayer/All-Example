@@ -14,6 +14,6 @@ class MainActivity2 : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        startService(Intent(this,BackgroundStartedService::class.java).putExtra("Id","4"))
+        startService(Intent(this,BackgroundStartedService::class.java).putExtra("Id",3))
     }
 }
