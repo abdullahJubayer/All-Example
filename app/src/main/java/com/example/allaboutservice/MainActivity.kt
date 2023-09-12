@@ -1,11 +1,13 @@
 package com.example.allaboutservice
 
+import android.app.PendingIntent
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import com.example.allaboutservice.background.started.BackgroundStartedService
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,21 +17,24 @@ class MainActivity : AppCompatActivity() {
 
 
         /* START_NOT_STICKY FLAG */
-        /* Kill the service before 60s. then call the second activity to start the service again*/
+        /* Kill the service before 40s. then call the pending intent to start the service again*/
         startService(Intent(this, BackgroundStartedService::class.java).putExtra("Id",1))
 
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
             run {
-                startService(Intent(this, BackgroundStartedService::class.java).putExtra("Id",2))
+                val pendingIntent = PendingIntent.getService(
+                    this@MainActivity, 0, Intent(this@MainActivity, BackgroundStartedService::class.java).putExtra("Id",2), PendingIntent.FLAG_MUTABLE
+                )
+                "Fire PendingIntent".show()
+                pendingIntent.send()
             }
-        }, 6000)
+        }, 40*1000)
 
     }
 
 
     override fun onStart() {
         super.onStart()
-        startService(Intent(this, BackgroundStartedService::class.java))
     }
 
     override fun onDestroy() {
