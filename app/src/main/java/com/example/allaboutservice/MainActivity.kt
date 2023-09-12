@@ -13,11 +13,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
+
+        /* START_NOT_STICKY FLAG */
+        /* Kill the service before 60s. then call the second activity to start the service again*/
+        startService(Intent(this, BackgroundStartedService::class.java).putExtra("Id","1"))
+
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
             run {
-                startActivity(Intent(this@MainActivity, MainActivity2::class.java))
+                startService(Intent(this, BackgroundStartedService::class.java).putExtra("Id","3"))
             }
-        }, 2000)
+        }, 6000)
+
     }
 
 

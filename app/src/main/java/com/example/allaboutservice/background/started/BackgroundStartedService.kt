@@ -20,7 +20,7 @@ class BackgroundStartedService : Service() {
             "HandleMessage : ${msg.arg1}".show()
 
             "ServiceHandlerThread.Start".show()
-            Thread.sleep(50000)
+            Thread.sleep(60*1000)
             "ServiceHandlerThread.End".show()
 
         }
@@ -44,7 +44,7 @@ class BackgroundStartedService : Service() {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        "onStartCommand".show()
+        "onStartCommand ${startId}".show()
 
         /*This will block the main thread which hosting this service*/
         /**
@@ -56,21 +56,27 @@ class BackgroundStartedService : Service() {
 
         /* We can use HandlerThread to handle our operation in background. and this execute like a queue when new Intent arrived */
         serviceHandler.obtainMessage().also {
-            it.arg1 = startId
+            it.arg1 = intent?.getStringExtra("Id")?.toInt() ?: -1
             serviceHandler.sendMessage(it)
         }
 
 
         /* Or We can use Thread class to handle our operation in background. But this will execute as soon as new Intent arrived */
-        Thread(Runnable {
-            run {
-                "Thread2.Start".show()
-                Thread.sleep(50000)
-                "Thread2.End".show()
-            }
-        }).start()
+//        Thread(Runnable {
+//            run {
+//                "Thread2.Start".show()
+//                Thread.sleep(50000)
+//                "Thread2.End".show()
+//            }
+//        }).start()
 
-        return Service.START_STICKY
+
+        /*START_NOT_STICKY FLAG*/
+        /* If we use start not sticky flag, this service will not auto-create after been killed by system. but if we call the service again this will re-create the service*/
+        /*For example if we want to download 3 files. when first file downloading system kill the service. after sometimes start the service to download second file,this will work fine*/
+        /*START_NOT_STICKY FLAG*/
+
+        return Service.START_NOT_STICKY
     }
 
     /* Return Null Because No  Binding Needed */
