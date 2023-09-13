@@ -17,19 +17,18 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        /* START_NOT_STICKY FLAG */
-        /* Kill the service before 40s. then call the pending intent to start the service again*/
         startService(Intent(this, BackgroundStartedService::class.java).putExtra("Id",1))
 
-        Handler(Looper.getMainLooper()).postDelayed(Runnable {
-            run {
-                val pendingIntent = PendingIntent.getService(
-                    this@MainActivity, 0, Intent(this@MainActivity, BackgroundStartedService::class.java).putExtra("Id",2), PendingIntent.FLAG_MUTABLE
-                )
-                "Fire PendingIntent".show()
-                pendingIntent.send()
-            }
-        }, 40*1000)
+        /* Kill the service before 40s. then call the pending intent to start the service again*/
+//        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+//            run {
+//                val pendingIntent = PendingIntent.getService(
+//                    this@MainActivity, 0, Intent(this@MainActivity, BackgroundStartedService::class.java).putExtra("Id",2), PendingIntent.FLAG_MUTABLE
+//                )
+//                "Fire PendingIntent".show()
+//                pendingIntent.send()
+//            }
+//        }, 40*1000)
 
     }
 
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        stopService(Intent(this, BackgroundStartedService::class.java))
+//        stopService(Intent(this, BackgroundStartedService::class.java))
         super.onDestroy()
     }
 }

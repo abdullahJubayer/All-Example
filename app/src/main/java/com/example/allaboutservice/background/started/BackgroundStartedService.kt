@@ -79,11 +79,19 @@ class BackgroundStartedService : Service() {
 
         /*START_NOT_STICKY FLAG*/
         /* If we use start not sticky flag, this service will not auto-create after been killed by system. but if we call the service again this will re-create the service*/
-        /*For example if we want to download 3 files. when first file downloading system kill the service. after sometimes start the service to download second file,this will work fine*/
         /*START_NOT_STICKY FLAG*/
 
 
-        return Service.START_STICKY
+        /*START_STICKY FLAG*/
+        /* If we use start sticky flag, this service will auto-create after been killed by system. but the Intent that is processed by service will lost and the service auto-create with null Intent */
+        /*START_NOT_STICKY FLAG*/
+
+
+        /*START_REDELIVER_INTENT FLAG*/
+        /* If we use START_REDELIVER_INTENT flag, this service will auto-create after been killed by system. and the Intent that is processed by service will re-deliver and the service auto-create with all Intent */
+        /*START_REDELIVER_INTENT FLAG*/
+
+        return Service.START_REDELIVER_INTENT
     }
 
     /* Return Null Because No  Binding Needed */
