@@ -76,7 +76,7 @@ class BackgroundStartedService : Service() {
 //            }
 //        }).start()
 
-        return Service.START_NOT_STICKY
+        return Service.START_STICKY
     }
 
     /* Return Null Because No  Binding Needed */
