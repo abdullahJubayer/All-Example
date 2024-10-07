@@ -1,4 +1,4 @@
-package com.example.allaboutservice
+package com.example.custom_views
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package com.example.allaboutservice
+package com.example.custom_views
 
 import org.junit.Test
 
