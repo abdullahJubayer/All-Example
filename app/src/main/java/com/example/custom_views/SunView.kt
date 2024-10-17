@@ -6,75 +6,111 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PointF
-import android.graphics.RectF
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import kotlin.math.cos
-import kotlin.math.sign
-import kotlin.math.sin
+import androidx.core.content.ContextCompat
+import com.example.allaboutservice.R
 
 class SunView  @JvmOverloads constructor(ctx: Context, attrSet: AttributeSet? = null, defStyleAttr : Int = 0, defStyleRes:Int =0): View(ctx,attrSet,defStyleAttr,defStyleRes)  {
-    private var path = Path()
-    private val rect = RectF(0.1f * width,  0.1f * height,0.9f * width, 0.5f * height)
+    private val sunImage: Drawable? = ContextCompat.getDrawable(context, R.drawable.baseline_sunny)
+    private var sunPointF = PointF()
+    private var percentage = 0.0
 
+    private val paint = Paint().apply {
+        color = Color.GREEN
+        style = Paint.Style.FILL
+        isAntiAlias = true
+        textSize = 40f
+    }
 
-
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.RED
-        style = Paint.Style.STROKE
-        strokeWidth = 10f
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        sunPointF=getXYofAngle(180.0, 0.4f * width)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         drawSun(canvas)
+        drawText(canvas)
     }
 
-    private fun drawSun(canvas: Canvas){
-        path.moveTo(0.1f * width, 0.1f * height)
-        val rect = RectF(0.1f * width,  0.1f * height,0.9f * width, 0.5f * height)
-
-        for (i in 180..360){
-           val pointf= getXYofAngle(i.toDouble(),100f)
-            path.addArc(rect,pointf.x,pointf.y)
+    private fun drawSun(canvas: Canvas) {
+        paint.apply {
+            color = Color.GREEN
+        }
+        for (i in 180.. (180 + percentage).toInt()) {
+            if ((i - 180) % 10 < 5) {
+                val points = getXYofAngle(i.toDouble(), 0.4f * width)
+                canvas.drawCircle(points.x, points.y, 5f, paint)
+            }
         }
 
-        canvas.drawPath(path,paint)
+        paint.apply {
+            color = Color.GRAY
+        }
+        for (i in (180 + percentage).toInt()..364) {
+            if ((i - 180) % 10 < 5) {
+                val points = getXYofAngle(i.toDouble(), 0.4f * width)
+                canvas.drawCircle(points.x, points.y, 5f, paint)
+            }
+        }
+
+        sunImage?.setBounds(
+            sunPointF.x.toInt() - 50, sunPointF.y.toInt() - 50,
+            sunPointF.x.toInt() + 50, sunPointF.y.toInt() + 50
+        )
+        sunImage?.draw(canvas)
     }
 
-    private fun getXYofAngle(angle: Double, r: Float): PointF {
+    private fun drawText(canvas: Canvas){
+        val textBounds = Rect()
+        paint.also {
+            it.color = Color.GREEN
+            it.textSize = 50f
+            it.getTextBounds("07:09 AM", 0, "07:09 AM".length, textBounds)
+        }
+        var x = 0.1f * width - (textBounds.width() / 2f)
+        canvas.drawText("07:09 AM",x,0.51f * height + 100f,paint)
+
+        paint.also {
+            it.color = Color.GRAY
+            it.textSize = 30f
+            it.getTextBounds("Sunrise", 0, "Sunrise".length, textBounds)
+        }
+        x = 0.1f * width - (textBounds.width() / 2f)
+        canvas.drawText("Sunrise",x,0.51f * height + 150f,paint)
+
+
+        paint.also {
+            it.color = Color.GREEN
+            it.textSize = 50f
+            it.getTextBounds("07:09 AM", 0, "07:09 AM".length, textBounds)
+        }
+        x = 0.9f * width - (textBounds.width() / 2f)
+        canvas.drawText("07:09 AM",x,0.51f * height + 100f,paint)
+
+        paint.also {
+            it.color = Color.GRAY
+            it.textSize = 30f
+            it.getTextBounds("Sunset", 0, "Sunset".length, textBounds)
+        }
+        x = 0.9f * width - (textBounds.width() / 2f)
+        canvas.drawText("Sunset",x,0.51f * height + 150f,paint)
+    }
+
+    private fun getXYofAngle(angle: Double, radius: Float): PointF {
         val radians = Math.toRadians(angle)
-        val cosAngle = cos(radians)
-        val signAngle = sign(radians)
-        val x = cosAngle.plus(r)
-        val y = signAngle.plus(r)
-        Log.e("getXYofAngle","Radiuns $angle: "+radians + " cosAngle: "+cosAngle+" signAngle: "+signAngle + " x: "+x+" y: "+y)
-        return PointF()
+        val x = (radius * Math.cos(radians) + width / 2f).toFloat()
+        val y = (radius * Math.sin(radians) + height / 2f).toFloat()
+        return PointF(x, y)
     }
 
-    private fun drawCup(canvas: Canvas){
-        path.moveTo(0.4f * width, 0.32f * height)
-        path.lineTo(0.4f * width, 0.4f * height)
-        path.lineTo(0.5f * width, 0.44f * height)
-        path.lineTo(0.6f * width, 0.4f * height)
-        path.lineTo(0.6f * width, 0.32f * height)
-        path.moveTo(0.4f * width, 0.35f * height)
-        path.quadTo(0.3f * width, 0.36f * height,0.4f * width, 0.38f * height)
-
-        path.moveTo(0.6f * width, 0.35f * height)
-        path.quadTo(0.7f * width, 0.36f * height,0.6f * width, 0.38f * height)
-        path.moveTo(0.45f * width, 0.36f * height)
-        path.addCircle(0.45f * width, 0.37f * height, 10f, Path.Direction.CW)
-        path.addCircle(0.55f * width, 0.37f * height, 10f, Path.Direction.CW)
-
-        path.moveTo(0.5f * width, 0.36f * height)
-        path.lineTo(0.5f * width, 0.39f * height)
-
-        path.moveTo(0.45f * width, 0.38f * height)
-        path.addArc(RectF(0.4f * width, 0.35f * height ,0.6f * width, 0.4f * height),60f,60f)
-
-        canvas.drawPath(path, paint)
+    fun moveSun(progress : Int){
+        percentage = 180.0 * (progress / 100.0)
+        sunPointF = getXYofAngle(180.0 + percentage , 0.4f * width)
+        invalidate()
     }
 
 }
